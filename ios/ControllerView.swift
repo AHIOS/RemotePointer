@@ -8,25 +8,15 @@ struct ControllerView: View {
     @State private var sensitivity: Double = 1.2
     @State private var lastTranslation: CGSize = .zero
     @State private var keyboardText = ""
+    @State private var showingControlsSheet = false
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
             connectionHeader
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Sensitivity")
-                    .font(.headline)
-                Slider(value: $sensitivity, in: 0.2...3.0, step: 0.1)
-                Text(String(format: "%.1fx", sensitivity))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.horizontal)
 
             trackpadSurface
                 .padding(.horizontal)
-                .padding(.bottom, 12)
-                .frame(maxWidth: .infinity, minHeight: 320)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             HStack(spacing: 12) {
                 Button {
@@ -46,44 +36,13 @@ struct ControllerView: View {
                 .buttonStyle(.bordered)
             }
             .padding(.horizontal)
-            .padding(.bottom, 12)
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Keyboard")
-                    .font(.headline)
-
-                HStack(spacing: 8) {
-                    TextField("Type and press Send", text: $keyboardText)
-                        .textFieldStyle(.roundedBorder)
-                        .submitLabel(.send)
-                        .onSubmit {
-                            sendKeyboardText()
-                        }
-
-                    Button("Send") {
-                        sendKeyboardText()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(keyboardText.isEmpty)
-                }
-
-                HStack(spacing: 12) {
-                    Button("Enter") {
-                        tapSpecialKey(code: 36)
-                    }
-                    .buttonStyle(.bordered)
-
-                    Button("Backspace") {
-                        tapSpecialKey(code: 51)
-                    }
-                    .buttonStyle(.bordered)
-                }
-                .font(.caption)
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 16)
+            .padding(.bottom, 14)
         }
         .background(Color(.systemGroupedBackground))
+        .sheet(isPresented: $showingControlsSheet) {
+            controlsSheet
+                .presentationDetents([.medium, .large])
+        }
     }
 
     private var connectionHeader: some View {
@@ -99,8 +58,14 @@ struct ControllerView: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
+            Button("Controls") {
+                showingControlsSheet = true
+            }
+            .buttonStyle(.bordered)
+            .font(.caption.weight(.semibold))
         }
-        .padding()
+        .padding(.horizontal)
+        .padding(.top, 10)
     }
 
     private var trackpadSurface: some View {
@@ -113,7 +78,7 @@ struct ControllerView: View {
                         .stroke(.secondary.opacity(0.4), lineWidth: 1)
                 )
                 .overlay(alignment: .topLeading) {
-                    Text("Drag to move pointer")
+                    Text("Drag: move • Double tap: left click • Two-finger tap: right click")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                         .padding(12)
@@ -137,6 +102,67 @@ struct ControllerView: View {
                             lastTranslation = .zero
                         }
                 )
+        }
+    }
+
+    private var controlsSheet: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Pointer Sensitivity")
+                        .font(.headline)
+                    Slider(value: $sensitivity, in: 0.2...3.0, step: 0.1)
+                    Text(String(format: "%.1fx", sensitivity))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Divider()
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Keyboard")
+                        .font(.headline)
+
+                    HStack(spacing: 8) {
+                        TextField("Type and press Send", text: $keyboardText)
+                            .textFieldStyle(.roundedBorder)
+                            .submitLabel(.send)
+                            .onSubmit {
+                                sendKeyboardText()
+                            }
+
+                        Button("Send") {
+                            sendKeyboardText()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(keyboardText.isEmpty)
+                    }
+
+                    HStack(spacing: 12) {
+                        Button("Enter") {
+                            tapSpecialKey(code: 36)
+                        }
+                        .buttonStyle(.bordered)
+
+                        Button("Backspace") {
+                            tapSpecialKey(code: 51)
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    .font(.caption)
+                }
+
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Controls")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        showingControlsSheet = false
+                    }
+                }
+            }
         }
     }
 
