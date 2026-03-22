@@ -1,0 +1,63 @@
+name: RemotePointer
+options:
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: 5.0
+targets:
+  RemotePointerShared:
+    type: framework
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.remotepointer.shared
+  RemotePointeriOS:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: ios
+      - path: shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.remotepointer.ios
+        TARGETED_DEVICE_FAMILY: "1,2"
+        DEVELOPMENT_TEAM: ""
+    info:
+      path: ios/Info.plist
+      properties:
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        NSLocalNetworkUsageDescription: "RemotePointer needs local network access to discover and connect to your Mac."
+        NSBonjourServices:
+          - "_rmpointer-v1._tcp"
+          - "_rmpointer-v1._udp"
+  RemotePointerMac:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: mac
+      - path: shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.remotepointer.mac
+        DEVELOPMENT_TEAM: ""
+    info:
+      path: mac/Info.plist
+      properties:
+        LSUIElement: true
+        NSSupportsAutomaticTermination: true
+        NSHumanReadableCopyright: ""
+  RemotePointerSharedTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: tests
+    dependencies:
+      - target: RemotePointerShared
