@@ -9,6 +9,7 @@ struct ControllerView: View {
     @State private var lastTranslation: CGSize = .zero
     @State private var keyboardText = ""
     @State private var showingControlsSheet = false
+    @State private var controlsSheetDetent: PresentationDetent = .medium
 
     var body: some View {
         VStack(spacing: 12) {
@@ -26,6 +27,7 @@ struct ControllerView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
+                .controlSize(.small)
 
                 Button {
                     client.send(.click(button: .right), mode: .reliable)
@@ -34,6 +36,7 @@ struct ControllerView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
+                .controlSize(.small)
             }
             .padding(.horizontal)
             .padding(.bottom, 14)
@@ -41,7 +44,7 @@ struct ControllerView: View {
         .background(Color(.systemGroupedBackground))
         .sheet(isPresented: $showingControlsSheet) {
             controlsSheet
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.medium, .large], selection: $controlsSheetDetent)
         }
     }
 
@@ -58,8 +61,10 @@ struct ControllerView: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            Button("Controls") {
+            Button {
                 showingControlsSheet = true
+            } label: {
+                Label("Controls", systemImage: "slider.horizontal.3")
             }
             .buttonStyle(.bordered)
             .font(.caption.weight(.semibold))
