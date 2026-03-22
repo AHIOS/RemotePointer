@@ -58,3 +58,7 @@ RemotePointer is a lightweight Apple-platform remote control app:
 
 This project started as a quick AI-assisted vibe-coding experiment to build something useful.
 The code was iterated with AI help and then manually reviewed and tested.
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE` for details.
