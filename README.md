@@ -62,3 +62,7 @@ The code was iterated with AI help and then manually reviewed and tested.
 ## License
 
 This project is licensed under the MIT License. See `LICENSE` for details.
+
+## Contributing
+
+See `CONTRIBUTING.md` for the lightweight branching strategy and PR checklist.
