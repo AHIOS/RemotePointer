@@ -52,9 +52,13 @@ final class MenuBarController: ObservableObject {
             cursorController.apply(deltaX: deltaX, deltaY: deltaY)
         case let .click(button):
             cursorController.click(button: button)
+        case let .keyboardText(text):
+            cursorController.type(text: text)
+        case let .keyboardKey(code, isDown):
+            cursorController.pressKey(code: code, isDown: isDown)
         case let .setSensitivity(value):
             sensitivity = value
-        case .keyboardText, .keyboardKey, .ping:
+        case .ping:
             break
         }
         refreshStatus()

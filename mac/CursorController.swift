@@ -63,6 +63,26 @@ final class CursorController: ObservableObject {
         mouseUp?.post(tap: .cghidEventTap)
     }
 
+    func type(text: String) {
+        guard hasAccessibilityPermission else { return }
+        guard !text.isEmpty else { return }
+
+        let source = CGEventSource(stateID: .hidSystemState)
+        let down = CGEvent(keyboardEventSource: source, virtualKey: 0, keyDown: true)
+        let up = CGEvent(keyboardEventSource: source, virtualKey: 0, keyDown: false)
+        down?.keyboardSetUnicodeString(stringLength: text.utf16.count, unicodeString: Array(text.utf16))
+        up?.keyboardSetUnicodeString(stringLength: text.utf16.count, unicodeString: Array(text.utf16))
+        down?.post(tap: .cghidEventTap)
+        up?.post(tap: .cghidEventTap)
+    }
+
+    func pressKey(code: UInt16, isDown: Bool) {
+        guard hasAccessibilityPermission else { return }
+        let source = CGEventSource(stateID: .hidSystemState)
+        let event = CGEvent(keyboardEventSource: source, virtualKey: CGKeyCode(code), keyDown: isDown)
+        event?.post(tap: .cghidEventTap)
+    }
+
     private func refreshDisplayBoundsIfNeeded() {
         guard displayBounds.isNull else { return }
 

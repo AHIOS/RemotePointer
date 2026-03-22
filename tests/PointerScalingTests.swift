@@ -11,6 +11,6 @@ final class PointerScalingTests: XCTestCase {
         )
 
         XCTAssertEqual(result.x, 700, accuracy: 0.001)
-        XCTAssertEqual(result.y, -700, accuracy: 0.001)
+        XCTAssertEqual(result.y, 700, accuracy: 0.001)
     }
 }

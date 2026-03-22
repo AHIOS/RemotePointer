@@ -16,4 +16,17 @@ final class ControlMessageTests: XCTestCase {
         XCTAssertEqual(deltaY, -9.8, accuracy: 0.001)
         XCTAssertEqual(timestamp, 42, accuracy: 0.001)
     }
+
+    func testKeyboardTextRoundTrip() throws {
+        let message = ControlMessage.keyboardText("Hello from iPhone")
+        let encoded = try ControlCodec.encode(message)
+        let decoded = try ControlCodec.decode(encoded)
+
+        guard case let .keyboardText(text) = decoded else {
+            XCTFail("Expected keyboardText message")
+            return
+        }
+
+        XCTAssertEqual(text, "Hello from iPhone")
+    }
 }

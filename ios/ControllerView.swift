@@ -7,6 +7,7 @@ struct ControllerView: View {
     @ObservedObject var client: MPCClient
     @State private var sensitivity: Double = 1.2
     @State private var lastTranslation: CGSize = .zero
+    @State private var keyboardText = ""
 
     var body: some View {
         VStack(spacing: 16) {
@@ -46,6 +47,41 @@ struct ControllerView: View {
             }
             .padding(.horizontal)
             .padding(.bottom, 12)
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Keyboard")
+                    .font(.headline)
+
+                HStack(spacing: 8) {
+                    TextField("Type and press Send", text: $keyboardText)
+                        .textFieldStyle(.roundedBorder)
+                        .submitLabel(.send)
+                        .onSubmit {
+                            sendKeyboardText()
+                        }
+
+                    Button("Send") {
+                        sendKeyboardText()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(keyboardText.isEmpty)
+                }
+
+                HStack(spacing: 12) {
+                    Button("Enter") {
+                        tapSpecialKey(code: 36)
+                    }
+                    .buttonStyle(.bordered)
+
+                    Button("Backspace") {
+                        tapSpecialKey(code: 51)
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .font(.caption)
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 16)
         }
         .background(Color(.systemGroupedBackground))
     }
@@ -123,6 +159,17 @@ struct ControllerView: View {
             timestamp: Date().timeIntervalSince1970
         )
         client.send(message, mode: .unreliable)
+    }
+
+    private func sendKeyboardText() {
+        guard !keyboardText.isEmpty else { return }
+        client.send(.keyboardText(keyboardText), mode: .reliable)
+        keyboardText = ""
+    }
+
+    private func tapSpecialKey(code: UInt16) {
+        client.send(.keyboardKey(code: code, isDown: true), mode: .reliable)
+        client.send(.keyboardKey(code: code, isDown: false), mode: .reliable)
     }
 }
 

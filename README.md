@@ -48,11 +48,12 @@ RemotePointer is a lightweight Apple-platform remote control app:
 - Drag: move pointer
 - One-finger double tap: left click
 - Two-finger tap: right click
+- Keyboard panel: send typed text plus Enter/Backspace
 
 ## Notes
 
 - This version is local-network only (no internet relay).
-- Keyboard support is planned for a future release.
+- Keyboard support currently includes basic text and key actions.
 
 ## Development Note
 
